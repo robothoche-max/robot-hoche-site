@@ -28,4 +28,4 @@
    ========================================================================= */
 
 const SUPABASE_URL = "https://dzevklrfkfhhyrojfhda.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6ZXZrbHJma2ZoaHlyb2pmaGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2OTI0NzksImV4cCI6MjEwNDI2ODQ3OX0.Yu7mWuMT08IPq9IWN4ivKk1mWoERaIg8MFT9n3dSNdA";
+const SUPABASE_KEY = "sb_publishable_hWTxCNCS9INhjYXCan1xiw_d5XnhRnN";
