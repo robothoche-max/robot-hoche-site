@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau de bord — Espace bureau — Robot'Hoche</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="../images/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/js/theme.js"></script>
+</head>
+<body>
+
+<!-- Tant que le script auth-guard.js n'a pas confirmé que l'utilisateur est
+     bien autorisé, on masque tout le tableau de bord pour éviter d'afficher
+     une interface vide ou de faire un aller-retour visible vers la page de
+     connexion. -->
+<div id="verification-en-cours" class="login-shell">
+  <div class="spinner"></div>
+</div>
+
+<div class="admin-shell hidden" id="tableau-de-bord">
+
+  <!-- ============================================================
+       BARRE LATERALE — un bouton par section du tableau de bord.
+       Pour AJOUTER une nouvelle section : ajoute un <button> ici
+       avec un data-panel="mon-panel", puis un <section id="mon-panel">
+       plus bas, puis un fichier assets/js/admin/dashboard-xxx.js.
+       ============================================================ -->
+  <aside class="admin-sidebar">
+    <div class="nav-brand">
+      <img src="../images/logo.jpg" alt="Logo Robot'Hoche">
+      Robot'Hoche
+    </div>
+    <ul class="admin-nav">
+      <li><button data-panel="panel-textes" class="is-active">Textes du site</button></li>
+      <li><button data-panel="panel-projets">Projets</button></li>
+      <li><button data-panel="panel-evenements">Calendrier</button></li>
+      <li><button data-panel="panel-inscriptions">Demandes d'inscription</button></li>
+      <li><button data-panel="panel-prive">Informations privées</button></li>
+      <li><button data-panel="panel-membres">Membres</button></li>
+      <li><button data-panel="panel-ressources">Ressources internes</button></li>
+      <li id="onglet-acces" class="hidden"><button data-panel="panel-acces">Gérer les accès</button></li>
+    </ul>
+  </aside>
+
+  <div class="admin-main">
+
+    <div class="admin-topbar">
+      <div>
+        <h1 style="font-size:1.3rem; margin:0;">Espace bureau</h1>
+        <p class="text-muted mb-0" id="info-connecte">Connecté</p>
+      </div>
+      <div class="flex gap-2">
+        <a href="../index.html" class="btn btn-outline btn-sm">Voir le site</a>
+        <button class="btn btn-outline btn-sm" id="bouton-deconnexion">Se déconnecter</button>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PANEL : TEXTES DU SITE
+         Rempli dynamiquement par assets/js/admin/dashboard-textes.js
+         ============================================================ -->
+    <section id="panel-textes" class="admin-panel is-active">
+      <h2>Textes du site</h2>
+      <p class="text-muted">Ces textes apparaissent directement sur les pages publiques du site.</p>
+      <div class="form-message" id="message-textes"></div>
+      <form id="form-textes"></form>
+    </section>
+
+    <!-- ============================================================
+         PANEL : PROJETS
+         Rempli par assets/js/admin/dashboard-projets.js
+         ============================================================ -->
+    <section id="panel-projets" class="admin-panel">
+      <h2>Projets</h2>
+      <p class="text-muted">Ajoute, modifie ou supprime les projets affichés sur la page « Projets ».</p>
+      <div class="form-message" id="message-projets"></div>
+
+      <form id="form-projet" class="editor-form">
+        <input type="hidden" id="projet-id">
+        <div class="field">
+          <label for="projet-titre">Titre</label>
+          <input class="input" id="projet-titre" required>
+        </div>
+        <div class="field">
+          <label for="projet-resume">Résumé court (affiché sur la carte)</label>
+          <textarea class="input" id="projet-resume" rows="2"></textarea>
+        </div>
+        <div class="field">
+          <label for="projet-description">Description détaillée (facultatif)</label>
+          <textarea class="input" id="projet-description" rows="4"></textarea>
+        </div>
+        <div class="field">
+          <label for="projet-statut">Statut</label>
+          <select class="input" id="projet-statut">
+            <option value="Idée">Idée</option>
+            <option value="En cours" selected>En cours</option>
+            <option value="Terminé">Terminé</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="projet-image">Photo</label>
+          <input class="input" type="file" id="projet-image" accept="image/*">
+          <span class="hint">Envoie une image (elle sera hébergée automatiquement), ou laisse vide et colle un lien ci-dessous.</span>
+          <input class="input mt-1" id="projet-image-url" placeholder="Ou colle ici un lien d'image existant">
+        </div>
+        <div class="field">
+          <label for="projet-video">Lien vidéo (Youtube ou autre)</label>
+          <input class="input" id="projet-video" placeholder="https://youtube.com/watch?v=...">
+        </div>
+        <div class="field">
+          <label for="projet-ordre">Ordre d'affichage</label>
+          <input class="input" type="number" id="projet-ordre" value="0">
+          <span class="hint">Les projets avec le chiffre le plus petit s'affichent en premier.</span>
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-primary" id="projet-bouton-submit">Ajouter le projet</button>
+          <button type="button" class="btn btn-outline hidden" id="projet-bouton-annuler">Annuler la modification</button>
+        </div>
+      </form>
+
+      <table class="data-table">
+        <thead><tr><th>Titre</th><th>Statut</th><th>Ordre</th><th></th></tr></thead>
+        <tbody id="tableau-projets"></tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         PANEL : CALENDRIER / EVENEMENTS
+         Rempli par assets/js/admin/dashboard-evenements.js
+         ============================================================ -->
+    <section id="panel-evenements" class="admin-panel">
+      <h2>Calendrier</h2>
+      <p class="text-muted">Ajoute, modifie ou supprime les événements affichés sur la page « Calendrier ».</p>
+      <div class="form-message" id="message-evenements"></div>
+
+      <form id="form-evenement" class="editor-form">
+        <input type="hidden" id="evenement-id">
+        <div class="field">
+          <label for="evenement-titre">Titre</label>
+          <input class="input" id="evenement-titre" required>
+        </div>
+        <div class="field">
+          <label for="evenement-description">Description</label>
+          <textarea class="input" id="evenement-description" rows="2"></textarea>
+        </div>
+        <div class="grid grid-2">
+          <div class="field">
+            <label for="evenement-date">Date</label>
+            <input class="input" type="date" id="evenement-date" required>
+          </div>
+          <div class="field">
+            <label for="evenement-heure">Heure (texte libre)</label>
+            <input class="input" id="evenement-heure" placeholder="Ex : 17h30">
+          </div>
+        </div>
+        <div class="field">
+          <label for="evenement-lieu">Lieu</label>
+          <input class="input" id="evenement-lieu">
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-primary" id="evenement-bouton-submit">Ajouter l'événement</button>
+          <button type="button" class="btn btn-outline hidden" id="evenement-bouton-annuler">Annuler la modification</button>
+        </div>
+      </form>
+
+      <table class="data-table">
+        <thead><tr><th>Date</th><th>Titre</th><th>Lieu</th><th></th></tr></thead>
+        <tbody id="tableau-evenements"></tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         PANEL : DEMANDES D'INSCRIPTION
+         Rempli par assets/js/admin/dashboard-inscriptions.js
+         ============================================================ -->
+    <section id="panel-inscriptions" class="admin-panel">
+      <h2>Demandes d'inscription</h2>
+      <p class="text-muted">Les demandes envoyées depuis le formulaire de la page « Rejoindre ».</p>
+      <table class="data-table">
+        <thead><tr><th>Reçu le</th><th>Nom</th><th>Classe</th><th>E-mail</th><th>Message</th><th>Traité</th><th></th></tr></thead>
+        <tbody id="tableau-inscriptions"></tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         PANEL : INFORMATIONS PRIVEES
+         Rempli par assets/js/admin/dashboard-prive.js
+         ============================================================ -->
+    <section id="panel-prive" class="admin-panel">
+      <h2>Informations privées</h2>
+      <p class="text-muted">Visible uniquement par les membres du bureau connectés — jamais sur le site public.</p>
+      <div class="form-message" id="message-prive"></div>
+      <form id="form-prive" class="editor-form">
+        <div class="field">
+          <label for="prive-telephone">Numéro de téléphone (président)</label>
+          <input class="input" id="prive-telephone">
+        </div>
+        <div class="field">
+          <label for="prive-notes">Notes internes</label>
+          <textarea class="input" id="prive-notes" rows="6"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+      </form>
+    </section>
+
+    <!-- ============================================================
+         PANEL : MEMBRES (annuaire interne)
+         Rempli par assets/js/admin/dashboard-membres.js
+         ============================================================ -->
+    <section id="panel-membres" class="admin-panel">
+      <h2>Membres</h2>
+      <p class="text-muted">Annuaire interne du club (non affiché sur le site public).</p>
+      <div class="form-message" id="message-membres"></div>
+      <form id="form-membre" class="editor-form">
+        <input type="hidden" id="membre-id">
+        <div class="grid grid-3">
+          <div class="field"><label for="membre-nom">Nom</label><input class="input" id="membre-nom" required></div>
+          <div class="field"><label for="membre-role">Rôle</label><input class="input" id="membre-role" placeholder="Président, membre..."></div>
+          <div class="field"><label for="membre-filiere">Filière</label><input class="input" id="membre-filiere" placeholder="MPSI, MP2I..."></div>
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-primary" id="membre-bouton-submit">Ajouter</button>
+          <button type="button" class="btn btn-outline hidden" id="membre-bouton-annuler">Annuler</button>
+        </div>
+      </form>
+      <table class="data-table">
+        <thead><tr><th>Nom</th><th>Rôle</th><th>Filière</th><th></th></tr></thead>
+        <tbody id="tableau-membres"></tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         PANEL : RESSOURCES INTERNES
+         Rempli par assets/js/admin/dashboard-ressources.js
+         ============================================================ -->
+    <section id="panel-ressources" class="admin-panel">
+      <h2>Ressources internes</h2>
+      <p class="text-muted">Liens utiles pour le bureau (drive partagé, tutoriels, contacts...), non affichés publiquement.</p>
+      <div class="form-message" id="message-ressources"></div>
+      <form id="form-ressource" class="editor-form">
+        <input type="hidden" id="ressource-id">
+        <div class="field"><label for="ressource-titre">Titre</label><input class="input" id="ressource-titre" required></div>
+        <div class="field"><label for="ressource-url">Lien</label><input class="input" id="ressource-url" placeholder="https://..."></div>
+        <div class="field"><label for="ressource-description">Description</label><textarea class="input" id="ressource-description" rows="2"></textarea></div>
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-primary" id="ressource-bouton-submit">Ajouter</button>
+          <button type="button" class="btn btn-outline hidden" id="ressource-bouton-annuler">Annuler</button>
+        </div>
+      </form>
+      <table class="data-table">
+        <thead><tr><th>Titre</th><th>Lien</th><th></th></tr></thead>
+        <tbody id="tableau-ressources"></tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         PANEL : GERER LES ACCES (visible uniquement pour le président)
+         Rempli par assets/js/admin/dashboard-acces.js
+         ============================================================ -->
+    <section id="panel-acces" class="admin-panel">
+      <h2>Gérer les accès</h2>
+      <p class="text-muted">
+        Choisis qui peut se connecter à cet espace bureau. Le compte (e-mail + mot de passe) doit
+        d'abord être créé dans Supabase, dans <strong>Authentication &gt; Users &gt; Add user</strong> —
+        c'est toi qui choisis alors le mot de passe que tu transmets à la personne.
+        Reviens ensuite ici pour l'autoriser.
+      </p>
+      <div class="form-message" id="message-acces"></div>
+      <form id="form-acces" class="editor-form">
+        <div class="grid grid-2">
+          <div class="field">
+            <label for="acces-email">E-mail du compte (déjà créé dans Supabase)</label>
+            <input class="input" type="email" id="acces-email" required>
+          </div>
+          <div class="field">
+            <label for="acces-role">Rôle</label>
+            <select class="input" id="acces-role">
+              <option value="editor">Éditeur (peut modifier le contenu)</option>
+              <option value="president">Président (accès total, gère aussi les accès)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Autoriser cet accès</button>
+      </form>
+      <table class="data-table">
+        <thead><tr><th>E-mail</th><th>Rôle</th><th></th></tr></thead>
+        <tbody id="tableau-acces"></tbody>
+      </table>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/supabase-client.js"></script>
+<script src="../assets/js/site-commun.js"></script>
+<script src="../assets/js/admin/auth-guard.js"></script>
+<script src="../assets/js/admin/dashboard-nav.js"></script>
+<script src="../assets/js/admin/dashboard-textes.js"></script>
+<script src="../assets/js/admin/dashboard-projets.js"></script>
+<script src="../assets/js/admin/dashboard-evenements.js"></script>
+<script src="../assets/js/admin/dashboard-inscriptions.js"></script>
+<script src="../assets/js/admin/dashboard-prive.js"></script>
+<script src="../assets/js/admin/dashboard-membres.js"></script>
+<script src="../assets/js/admin/dashboard-ressources.js"></script>
+<script src="../assets/js/admin/dashboard-acces.js"></script>
+</body>
+</html>

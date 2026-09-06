@@ -1,0 +1,787 @@
+/* ============================================================================
+   ROBOT'HOCHE — FEUILLE DE STYLE PRINCIPALE
+   ============================================================================
+   Ce fichier est organisé en grandes sections reperables avec des bannieres
+   "==== NOM DE LA SECTION ====". Utilise Ctrl+F (ou Cmd+F) et cherche le nom
+   d'une section pour la retrouver rapidement.
+
+   Sommaire :
+     1. POLICES
+     2. VARIABLES DE THEME (couleurs clair / sombre)
+     3. RESET DE BASE
+     4. TYPOGRAPHIE
+     5. MISE EN PAGE (conteneurs, grilles)
+     6. NAVIGATION
+     7. BOUTONS & BADGES
+     8. HERO (bandeau d'accueil)
+     9. CARTES & SECTIONS
+    10. ETAPES / TIMELINE (deroulement de seance, evenements)
+    11. FORMULAIRES
+    12. ADMINISTRATION (tableau de bord prive)
+    13. PIED DE PAGE
+    14. UTILITAIRES
+    15. RESPONSIVE (mobile)
+    16. ACCESSIBILITE
+   ========================================================================= */
+
+
+/* ============================================================================
+   1. POLICES
+   ----------------------------------------------------------------------------
+   Deux polices Google Fonts, chargees dans le <head> de chaque page HTML :
+   - "Space Grotesk"  -> tous les titres (identite technique / circuit imprime)
+   - "IBM Plex Sans"  -> tout le texte courant (police pensee pour la doc.
+     technique, coherente avec l'univers ingenierie du club)
+   Si tu veux changer de police un jour : modifie le <link> Google Fonts dans
+   le <head> de CHAQUE page HTML, puis change les valeurs ci-dessous.
+   ========================================================================= */
+
+:root {
+  --font-titres: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-texte: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+
+/* ============================================================================
+   2. VARIABLES DE THEME
+   ----------------------------------------------------------------------------
+   Toutes les couleurs du site passent par ces variables CSS. C'est LE bloc a
+   modifier si tu veux changer les couleurs du site (identite visuelle).
+   Le mode est bascule en JS (assets/js/theme.js) qui ajoute l'attribut
+   data-theme="dark" ou data-theme="light" sur la balise <html>.
+   ========================================================================= */
+
+:root,
+[data-theme="light"] {
+  /* Fond & panneaux (mode clair = ton "aluminium brosse", pas blanc pur) */
+  --bg: #F5F6F8;
+  --bg-soft: #EBEDF1;
+  --panel: #FFFFFF;
+  --border: #DCE0E6;
+
+  /* Texte */
+  --text: #10151F;
+  --text-muted: #4B5566;
+
+  /* Couleurs de marque (reprises du logo : bleu circuit + cuivre soudure) */
+  --accent: #2F63F2;         /* bleu "trace de circuit" -> liens, boutons, focus */
+  --accent-strong: #1E46B8;  /* variante fonc\u00e9e au survol */
+  --accent-soft: #E7EDFF;    /* fond tres clair pour badges/highlights */
+  --copper: #E8672A;         /* cuivre / fer a souder -> accents rares, CTA cle */
+  --copper-soft: #FCE8DA;
+
+  --success: #1F8A5A;
+  --success-soft: #E1F5EB;
+
+  /* Ombres et halo (discrets, jamais le gris SaaS generique) */
+  --shadow-sm: 0 1px 2px rgba(16, 21, 31, 0.06);
+  --shadow-md: 0 8px 24px rgba(16, 21, 31, 0.08);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #080B14;
+  --bg-soft: #0D1220;
+  --panel: #121A2C;
+  --border: #232E47;
+
+  --text: #E7EAF0;
+  --text-muted: #93A0BA;
+
+  --accent: #5B8CFF;
+  --accent-strong: #86A9FF;
+  --accent-soft: #16213B;
+  --copper: #FF9A56;
+  --copper-soft: #2B1E14;
+
+  --success: #4ED399;
+  --success-soft: #103324;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+  color-scheme: dark;
+}
+
+
+/* ============================================================================
+   3. RESET DE BASE
+   ========================================================================= */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-texte);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+img, svg { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+ul, ol { padding-left: 1.2em; }
+
+button, input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+
+/* ============================================================================
+   4. TYPOGRAPHIE
+   ----------------------------------------------------------------------------
+   Echelle typographique fluide (clamp) : lisible sur mobile comme sur grand
+   ecran sans avoir besoin de multiplier les media-queries.
+   ========================================================================= */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-titres);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: clamp(2.25rem, 4vw + 1rem, 3.6rem); }
+h2 { font-size: clamp(1.6rem, 2.2vw + 1rem, 2.4rem); }
+h3 { font-size: clamp(1.2rem, 1vw + 1rem, 1.5rem); }
+
+p { margin: 0 0 1em; max-width: 62ch; }
+p.lead {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 58ch;
+}
+
+.text-muted { color: var(--text-muted); }
+.text-center { text-align: center; }
+.max-prose { max-width: 68ch; }
+
+
+/* ============================================================================
+   5. MISE EN PAGE
+   ========================================================================= */
+
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: 88px 0;
+  border-top: 1px solid var(--border);
+}
+
+.section-head {
+  margin-bottom: 48px;
+}
+
+.section-label {
+  font-family: var(--font-titres);
+  font-size: 0.95rem;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.grid {
+  display: grid;
+  gap: 28px;
+}
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-auto { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+
+/* ============================================================================
+   6. NAVIGATION
+   ========================================================================= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 14px 24px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-titres);
+  font-weight: 600;
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+.nav-brand img { width: 34px; height: 34px; border-radius: 50%; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  display: block;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  color: var(--text);
+  background: var(--bg-soft);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Bouton rond de bascule clair/sombre */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+/* Lien "Connexion" volontairement discret : il ne s'adresse qu'au bureau du
+   club, pas aux visiteurs. Pas de bouton flashy. */
+.nav-admin-link {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 7px 12px;
+  border-radius: 8px;
+}
+.nav-admin-link:hover { color: var(--text); }
+
+/* Menu mobile (hamburger) */
+.nav-burger {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  cursor: pointer;
+}
+
+
+/* ============================================================================
+   7. BOUTONS & BADGES
+   ========================================================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-strong); }
+
+.btn-copper {
+  background: var(--copper);
+  color: #1a0e05;
+}
+.btn-copper:hover { filter: brightness(1.08); }
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-sm { padding: 8px 14px; font-size: 0.85rem; border-radius: 8px; }
+.btn-danger { background: transparent; border-color: #C0392B; color: #C0392B; }
+.btn-danger:hover { background: #C0392B; color: #fff; }
+
+.btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.badge-copper { background: var(--copper-soft); color: var(--copper); }
+.badge-success { background: var(--success-soft); color: var(--success); }
+
+
+/* ============================================================================
+   8. HERO
+   ========================================================================= */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 72px 0 96px;
+  background:
+    linear-gradient(var(--bg), var(--bg)),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px);
+  background-blend-mode: normal;
+}
+/* La double grille en repeating-linear-gradient dessine une trame de circuit
+   imprime en arriere-plan. Elle est volontairement tres discrete (couleur de
+   bordure), pour eviter l'effet "fond decoratif" trop charge. */
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-eyebrow {
+  color: var(--copper);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.hero h1 { margin-bottom: 20px; }
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+.hero-stat b {
+  display: block;
+  font-family: var(--font-titres);
+  font-size: 1.6rem;
+}
+.hero-stat span { color: var(--text-muted); font-size: 0.88rem; }
+
+.hero-art {
+  animation: hero-fade-in 0.7s ease both;
+}
+@keyframes hero-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Circuit animé du schéma SVG dans le hero : un seul impulse au chargement,
+   pas d'animation permanente qui distrairait. */
+.circuit-pulse {
+  stroke-dasharray: 6 10;
+  animation: dash-move 6s linear infinite;
+  opacity: 0.6;
+}
+@keyframes dash-move {
+  to { stroke-dashoffset: -160; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .circuit-pulse { animation: none; }
+  .hero-art { animation: none; }
+}
+
+
+/* ============================================================================
+   9. CARTES & SECTIONS
+   ========================================================================= */
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+}
+
+/* Carte "projet" : coin marque par un petit angle de circuit plutot qu'une
+   ombre portee generique -> signature visuelle propre au site. */
+.project-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.project-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 26px; height: 26px;
+  border-top: 2px solid var(--copper);
+  border-left: 2px solid var(--copper);
+  border-top-left-radius: 14px;
+}
+.project-card-media {
+  aspect-ratio: 16 / 10;
+  background: var(--bg-soft);
+  overflow: hidden;
+}
+.project-card-media img,
+.project-card-media iframe {
+  width: 100%; height: 100%; object-fit: cover; border: 0;
+}
+.project-card-body { padding: 22px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.project-card-body h3 { margin: 0; }
+.project-card-foot {
+  padding: 0 22px 22px;
+  display: flex; justify-content: space-between; align-items: center;
+  color: var(--text-muted); font-size: 0.85rem;
+}
+
+.value-card {
+  padding: 24px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+.objective-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.objective-list li {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+}
+.objective-list b { font-family: var(--font-titres); color: var(--accent); min-width: 1.6em; }
+
+
+/* ============================================================================
+   10. ETAPES / TIMELINE
+   ----------------------------------------------------------------------------
+   Utilisee sur seances.html (A/B/C = vraie sequence chronologique d'une
+   seance) et sur calendrier.html (liste d'evenements dans le temps).
+   ========================================================================= */
+
+.steps {
+  display: grid;
+  gap: 0;
+  counter-reset: step;
+  border-left: 2px solid var(--border);
+  margin-left: 10px;
+  list-style: none;
+  padding: 0;
+}
+.step {
+  position: relative;
+  padding: 4px 0 36px 34px;
+}
+.step:last-child { padding-bottom: 4px; }
+.step::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: -15px;
+  top: 0;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-titres);
+  font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.step h3 { margin-bottom: 6px; }
+
+.event-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.event-item {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+}
+.event-date {
+  min-width: 76px;
+  text-align: center;
+  padding: 8px 6px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-titres);
+}
+.event-date b { display: block; font-size: 1.25rem; line-height: 1; }
+.event-date span { font-size: 0.72rem; text-transform: uppercase; }
+.event-item.is-past { opacity: 0.55; }
+
+
+/* ============================================================================
+   11. FORMULAIRES
+   ========================================================================= */
+
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.field label { font-size: 0.88rem; font-weight: 600; }
+.field .hint { font-size: 0.8rem; color: var(--text-muted); font-weight: 400; }
+
+.input, textarea.input, select.input {
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  width: 100%;
+}
+.input:focus, textarea.input:focus, select.input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+textarea.input { resize: vertical; min-height: 110px; font-family: var(--font-texte); }
+
+.form-message {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  display: none;
+}
+.form-message.is-visible { display: block; }
+.form-message.is-error { background: var(--copper-soft); color: var(--copper); }
+.form-message.is-success { background: var(--success-soft); color: var(--success); }
+
+
+/* ============================================================================
+   12. ADMINISTRATION (tableau de bord prive)
+   ========================================================================= */
+
+.admin-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+.admin-sidebar {
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  background: var(--bg-soft);
+}
+.admin-sidebar .nav-brand { padding: 0 8px 20px; }
+.admin-nav { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.admin-nav button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+.admin-nav button:hover { background: var(--panel); color: var(--text); }
+.admin-nav button.is-active { background: var(--panel); color: var(--accent); font-weight: 600; }
+
+.admin-main { padding: 32px 40px; max-width: 980px; }
+.admin-panel { display: none; }
+.admin-panel.is-active { display: block; }
+
+.admin-topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.data-table th, .data-table td {
+  text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.data-table th { color: var(--text-muted); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; }
+
+.admin-row-actions { display: flex; gap: 8px; }
+
+.editor-form { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+
+.login-shell {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.login-card { width: 100%; max-width: 380px; padding: 36px; }
+.login-card .nav-brand { justify-content: center; margin-bottom: 24px; font-size: 1.2rem; }
+
+
+/* ============================================================================
+   13. PIED DE PAGE
+   ========================================================================= */
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 0;
+  margin-top: 40px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 32px;
+}
+.footer-grid h4 { font-size: 0.95rem; margin-bottom: 12px; }
+.footer-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.footer-links a { color: var(--text-muted); font-size: 0.9rem; }
+.footer-links a:hover { color: var(--accent); }
+.footer-bottom {
+  margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.82rem;
+  flex-wrap: wrap; gap: 8px;
+}
+
+
+/* ============================================================================
+   14. UTILITAIRES
+   ========================================================================= */
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mt-4 { margin-top: 40px; }
+.mb-0 { margin-bottom: 0; }
+.flex { display: flex; }
+.gap-2 { gap: 12px; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.hidden { display: none !important; }
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+}
+.spinner {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 3px solid var(--border); border-top-color: var(--accent);
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+
+/* ============================================================================
+   15. RESPONSIVE (mobile)
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-art { order: -1; max-width: 320px; margin: 0 auto 8px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .admin-shell { grid-template-columns: 1fr; }
+  .admin-sidebar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; overflow-x: auto; padding: 12px;
+    border-right: none; border-bottom: 1px solid var(--border);
+  }
+  .admin-sidebar .nav-brand { display: none; }
+  .admin-nav { display: flex; gap: 4px; }
+  .admin-nav button { white-space: nowrap; }
+  .admin-main { padding: 24px 18px; }
+}
+
+@media (max-width: 720px) {
+  .nav-links { display: none; }
+  .nav-burger { display: block; }
+  .site-header.is-open .nav-links {
+    display: flex;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    flex-direction: column;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 12px;
+  }
+  .site-header.is-open .nav-links a { padding: 12px 14px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .section { padding: 56px 0; }
+}
+
+
+/* ============================================================================
+   16. ACCESSIBILITE
+   ========================================================================= */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: auto;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  z-index: 200;
+}
+.skip-link:focus {
+  left: 16px;
+  top: 16px;
+}
