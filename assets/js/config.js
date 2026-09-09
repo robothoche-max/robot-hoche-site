@@ -27,5 +27,5 @@
    pas encore.
    ========================================================================= */
 
-const SUPABASE_URL = "https://dzevklrfkfhhyrojfhda.supabase.co";
+const SUPABASE_URL = "dzevklrfkfhhyrojfhda";
 const SUPABASE_KEY = "sb_publishable_hWTxCNCS9INhjYXCan1xiw_d5XnhRnN";
